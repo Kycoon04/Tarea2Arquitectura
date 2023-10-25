@@ -7,7 +7,7 @@ menuOpciones2 db "2.               Salir", 10, 13, "$"
 CantidadLetras db "Cantidad de letras:", 10, 13, "$"
 fileName db "texto.txt", 0
 fileHandle dw ?
-buffer db 2048 dup(?) 
+buffer db 2048 dup(?)
 contador dw 1
 letras dw 0
 strBuffer db 10 dup(0)
@@ -104,7 +104,7 @@ foundAt:
     mov bx, fileHandle
     int 21h
 	lea si, buffer 
-	mov cx, [contador]
+	mov cx, contador
 	mov letras, 0
     jmp countLoop	
 	
@@ -117,11 +117,6 @@ fileError:
 countLoop:
     lodsb ; Cargar el siguiente carácter del buffer en AL
     cmp al, 'A'
-    jb notLetter
-    cmp al, 'Z'
-    jbe isLetter ; Saltar si el carácter está en el rango 'A' a 'Z'
-
-    cmp al, 'a'
     jb notLetter
     cmp al, 'z'
     ja notLetter ; lo mismo pero para las minusculas 
