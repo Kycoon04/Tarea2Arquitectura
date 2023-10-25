@@ -1,0 +1,17 @@
+DOSShell-2
+1
+Help
+proyecto
+C:\Users\jomav\OneDrive - Universidad Nacional de Costa Rica\Universidad\Semestres\Segundo año\IV Semestre\Arquitectura de computadoras\Ejercicios\ASM_ARQUITECTURA\FinalProyect\FinalProyect\EJEMPLO.EXE
+
+
+
+
+0
+Help
+C:\Users\jomav\OneDrive - Universidad Nacional de Costa Rica\Universidad\Semestres\Segundo año\IV Semestre\Arquitectura de computadoras\Proyecto Ensamblador\Documentación\XHelp\XHELP.EXE
+
+
+
+
+0

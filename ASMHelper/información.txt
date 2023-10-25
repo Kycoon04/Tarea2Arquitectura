@@ -1,0 +1,12 @@
+Autor:
+Diego Tames Vargas (thamesdiego@gmail.com)
+
+Este programa hace uso de mi framework "Spark",
+el cual se encuentra actualmente en desarrollo.
+- Si desea tener acceso a este, probar versiones
+preliminares y/o participar con una sugerencias,
+escriba un correo al autor.
+
+Dependencias externas:
+DOSBox v0.74: https://www.dosbox.com/
+HelpPC: http://helppc.netcore2k.net/

@@ -1,0 +1,227 @@
+
+  ÚÄ Resumen ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ 
+  ³                 SALIR - F10 S   (o Ctrl-S)   ³ 
+  ³   IMPRIMIR DEFINICION - F10 I   (o Ctrl-I)   ³ 
+  ³ EXPLORAR DEFINICIONES - F10 X   (o Ctrl-X)   ³ 
+  ³COLOCAR/ENCONTRAR SE¥ALADOR-F10 L/E (Ctrl-L/E)³ 
+  ³          Inicio/Final - Home/End             ³ 
+  ³     Subir/Bajar linea - /                  ³ 
+  ³  Subir/Bajar pantalla - PageUp/PageDn        ³ 
+  ³   Definici¢n Ant/Post - Ctrl-PageUp/PageDn   ³ 
+  ³    Cambiar de ventana - ÄÄ / ÄÄ            ³ 
+  ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ 
+
+
+    PRESIONE  O PageDn PARA LOS TOPICOS DE AYUDA
+     (Para imprimir esta ayuda, presione Ctrl-I)
+
+
+  COMO BUSCAR UN TERMINO (MODO DE CONSULTA) 
+ El Diccionario comienza con el cursor en la
+ casilla "Buscar T‚rmino", y permanece all¡ a menos
+ que se pase a la casilla "Explorar Definici¢nes".
+ Ingrese el t‚rmino deseado y presione Enter para
+ traer al cominezo de la lista la definici¢n
+ indicada.  Utilice las teclas de cursor para subir
+ y bajar en la lista.
+
+    Si el cursor est  en "Explorar Definiciones",
+ presione la flecha a la izquierda para volver al
+ modo de Consulta.
+
+
+
+  COMO SALIR 
+ Para salir del programa, elija SALIR en el menu
+ (F10 S) o presione Ctrl-S.
+
+
+
+  COMO EXPLORAR DEFINICIONES (MODO DE EXPLORAR) 
+ Se puede explorar el texto para encontrar cada
+ aparici¢n de un t‚rmino.  Utilice esto para
+ conocer m s acerca de un producto o fabricante que
+ no constituya en si mismo un t‚rmino.
+
+ 1 - Para pasar al Modo de Exploraci¢n, seleccione
+     EXPLORAR en el men£ (F10 X) o presione Ctrl-X.
+     El cursor pasar  desde "Buscar T‚rmino" a
+     "Explorar Definiciones".
+
+ 2 - Ingrese el t‚rmino deseado y presione Enter.
+     La exploraci¢n se inicia en la definicion
+     actual y se detiene en la primera
+     coincidencia.  Para reiniciar la exploraci¢n,
+     presione Enter.  Para borrar lo ingresado,
+     presione Esc.
+
+ 3 - Para volver al Modo de Consulta, presione la
+     flecha izquierda o derecha.
+
+
+
+  COMO IMPRIMIR UNA DEFINICION 
+ Para imprimir una definici¢n desde el inicio de la
+ ventana de texto actual hasta el final de la
+ definici¢n, seleccione IMPRIMIR en el men£ (F10 I)
+ o presione Ctrl-I.
+
+
+
+  COMO IMPRIMIR ESTA AYUDA 
+ Para imprimir esta ayuda, presione Ctrl-I.  La
+ ayuda se imprimir  desde el inicio de la ventana
+ actual de ayuda hasta el final de los t¢picos de
+ ayuda.
+
+
+
+  COMO EXTRAER UNA DEFINICION 
+ Se puede copiar definiciones a un archivo de disco
+ denominado DICC.OUT, el cual se puede importar en
+ su procesador de textos.  Para agregar la
+ definici¢n (desde el inicio de la ventana de texto
+ actual hasta el final de la definici¢n) a
+ DICC.OUT, seleccione DISCO en el men£ (F10 D) o
+ presione Ctrl-D.
+
+    Las definiciones se acumular n siempre en
+ DICC.OUT.  Para borrarlo y crearlo vac¡o,
+ seleccione BORRAR en el men£ (F10 B).
+
+
+
+  COMO REVISAR SUS CONSULTAS 
+ Se pueden revisar los £ltimos 50 t‚rminos
+ consultados en la sesi¢n.  Para el t‚rmino
+ anterior, presione F3.  Para avanzar en la lista,
+ presione F4.
+
+    La consulta queda registrada al llamar una
+ definici¢n desde la lista de t‚rminos, no al
+ desplazarse o cambiar de p gina en la ventana de
+ texto.
+
+
+
+  COMO COLOCAR Y ENCONTRAR UN SE¥ALADOR 
+ Para colocar un se¤alador en la actual ubicaci¢n
+ en el texto, seleccione SE¥ALADOR en el men£ (F10
+ L) o presione Ctrl-L.  Para encontrar el
+ se¤alador, seleccione ENCONTRAR el el men£ (F10 E)
+ o presione Ctrl-E.  El se¤alador queda grabado al
+ salir.
+
+    Se puede colocar s¢lo un se¤alador en el
+ Diccionario; sin embargo, cada vez que se consulta
+ un t‚rmino, esa consulta queda registrada, y se
+ pueden revisar las £ltimas 50 consultas
+ presionando F3 y F4.
+
+
+
+  INGRESO DE BARRAS Y GUIONES (/ and -) 
+ En el modo de Consulta (no el de Exploraci¢n), los
+ guiones y  barras son convertidos en blancos.  Por
+ ejemplo, ingresando A/D, A-D o A D se encontrar 
+ "convertidor A/D".
+
+
+
+  COMO ESTABLECER COLORES MONOCROMATICOS 
+        EN COMPUTADORAS PORTATILES       
+ Para un mayor contraste en las pantallas de las
+ computadoras portatiles que muestran escalas de
+ grises en lugar de colores, seleccione MONO en el
+ men£ (F10 M).  Los colores alternar n entre blanco
+ y negro y color con cada selecci¢n.  La selecci¢n
+ queda grabada al salir.
+
+
+
+  COMO EJECUTAR EL DICCIONARIO CON 
+       ACCESO INSTANTANEO (TSR)    
+ Se puede hacer aparecer el Diccionario
+ instant neamente, superpuesto a la mayor¡a de las
+ dem s aplicaciones, presionando una combinaci¢n de
+ teclas ("hotkey").  A fin de cargar el Diccionario
+ para acceso instant neo, cargue TSRDICC en lugar
+ de DICC.  La combinaci¢n de teclas se mostrar  en
+ la pantalla (por defecto es Alt-D).  Entonces,
+ cargue y ejecute como de costumbre su otra
+ aplicaci¢n.  Para hacer aparecer el Diccionario,
+ digite la combinaci¢n de teclas.  Al abandonar el
+ Diccionario, la aplicaci¢n previa regresar  a la
+ pantalla.
+
+    Opciones de Intercambio
+    TSRDICC es un TSR, es decir, un programa que
+ termina y permanece residente ("Terminates and
+ Stays Resident") en memoria.  Ocupa 6K de memoria
+ convencional.  Si usted tiene EMS (memoria
+ expandida), ocupa solamente 1K de memoria
+ convencional y coloca los restantes 5K en EMS.
+
+    Al ingresar la combinaci¢n de teclas, TSRDICC
+ hace lugar para el Diccionario trasladando el
+ contenido de la memoria que necesita a la memoria
+ extendida, a la expandida o, si ninguna est 
+ disponible, a un archivo temporario en el disco
+ duro.  Entonces, TSRDICC carga el Diccionario
+ desde el disco duro tal come se hace al ejecutarlo
+ en forma independiente.  Al salir del Diccionario
+ TSRDICC restaura la memoria que conserv¢.
+
+    Para evitar que TSRDICC utilice memoria
+ extendida, ingrese TSRDICC X.  Para evitar el uso
+ de memoria EMS, ingrese TSRDICC E.  Para que el
+ intercambio se realice solo con un archivo de
+ disco duro, ingrese TSRDICC XE.
+
+    Descarga del TSR
+    Para descargar TSRDICC y liberar los 6K o 1K
+ de memoria convencional, digite TSRDICC U desde
+ el DOS.  Solo se puede descargar un programa TSR
+ si ha sido el £ltimo en ser cargado.  Si se han
+ cargado otros TSR despu‚s de TSRDICC, se los debe
+ retirar primero.
+
+    ¨No Puede Hacer Aparecer el Diccionario?
+    Se puede acceder instant neamente al
+ Diccionario sobre la mayor¡a de las aplicaciones
+ de texto y de gr ficos; sin embargo, no se lo
+ puede hacer aparecer sobre Windows, DESQview,
+ GeoWorks Ensemble o cualquier otro software que
+ asuma el control de la computadora.  En estos
+ entornos, ejecute DICC.EXE, no TSRDICC.EXE.
+
+    TSRDICC tampoco permite acceder al Diccionario
+ sobre un programa que est‚ en modo de texto en 40
+ columnas.
+
+    Si hay inconvenientes con el acceso
+ instant neo, preube de intercambiar con un tipo
+ diferente de memoria, o solo con el disco duro
+ (ver "Opciones de intercambio" m s arriba).
+
+    Compruebe adem s el espacio que queda en el
+ disco.  Aseg£rese de tener 150K de espacio libre
+ en el mismo manipulador de disco en el que est n
+ almacenados los archivos del Diccionario.
+
+
+  COMO CAMBIAR LA COMBINACION DE TECLAS (HOTKEY) 
+ Para cambiar la combinaci¢n de teclas, seleccione
+ HOTKEY en el men£ (F10 H).  La combinaci¢n actual
+ se mostrar  destacada.  Para cambiar la tecla que
+ se debe mantener presionada, utilice las flechas
+ izquierda y derecha para indicar Ctrl, Ctrl-Alt, o
+ Alt.  Para cambiar la otra tecla, ingrese una
+ nueva letra o d¡gito.  Presione Enter para aceptar
+ la nueva combinaci¢n de teclas.
+
+    Nota: La combinaci¢n de teclas tendr  efecto
+ cuando se vuelva a cargar TSRDICC.
+
+
+
