@@ -1,17 +1,20 @@
 .model small
 .stack 100h
 .data
-
+prompt db "Ingrese el nombre del archivo: $"
 menuOpciones1 db "1.           Cargar Texto", 10, 13, "$"
 menuOpciones2 db "2.               Salir", 10, 13, "$"
 CantidadLetras db "Cantidad de letras:", 10, 13, "$"
-fileName db "texto.txt", 0
+CantidadPalabras db "Cantidad de palabras:", 10, 13, "$"
+menuOpciones3 db "3.    Ingresar nombre de archivo", 10, 13, "$"
+fileName db "texto.txt","$"
 fileHandle dw ?
 buffer db 2048 dup(?)
 contador dw 1
 letras dw 0
+palabras dw 0
 strBuffer db 10 dup(0)
-
+dobleEspacio db 0 
 posicion macro x, y
     mov ah, 02H
     mov bh, 00h
@@ -35,7 +38,6 @@ mov ds, ax
    mov ax,01h ; Establece para mostrar el cursor del mouse
    int 33h    ; Ejecuta la operación del mouse
 
-
     posicion 11, 20 ;Coloca el siguiente texto en el centro de la pantalla, fue a puro "ojo"
     mov ah, 09h
     lea dx, menuOpciones1
@@ -44,7 +46,10 @@ mov ds, ax
     mov ah, 09h
     lea dx, menuOpciones2
     int 21h
-	
+	posicion 13, 20 
+    mov ah, 09h
+    lea dx, menuOpciones3
+    int 21h
 menu:
     mov ah, 01h
     int 16h
@@ -58,6 +63,9 @@ menu:
 	
     cmp al, '2'
     je salir
+
+    cmp al, '3'
+    ;je getFileName
 	
 	jne menu ;Si escribe algo diferente aqui lo manda otra vez al menu
 	
@@ -116,16 +124,33 @@ fileError:
 
 countLoop:
     lodsb ; Cargar el siguiente carácter del buffer en AL
+	
+	cmp al, ' '
+	je isWord
+	cmp al, '.'
+	je isWord
     cmp al, 'A'
     jb notLetter
     cmp al, 'z'
     ja notLetter ; lo mismo pero para las minusculas 
 
 isLetter:
-    inc letras ;  si el carácter es una letra incrementa
-notLetter:
+    mov dobleEspacio, 0
+    inc letras
+    loop countLoop	;  si el carácter es una letra incrementa
+isWord:
+    inc dobleEspacio
+    cmp dobleEspacio,2
+    je resetDobleEspacio
+    inc palabras
+	jmp notLetter
+	
+	resetDobleEspacio:
+    mov dobleEspacio, 0 
+notLetter: 
     loop countLoop
     
+	mov ax, letras
 	call numToStr ; Convierte el número de letras a una cadena ya que no sabia que no era posible imprimir un numero
     
 	
@@ -139,11 +164,23 @@ notLetter:
     int 21h
     lea dx, [di] 
     mov ah, 09h
-    int 21h ; Imprime la cadena
+    int 21h 
+	
+	mov ax, palabras
+	call numToStr 
+	
+	posicion 13, 0
+    mov ah, 09h
+    lea dx, CantidadPalabras
+	int 21h
+	lea dx, [di] 
+    mov ah, 09h
+    int 21h
+	
 	
 	;Sacado de internet como pasar de numero a letras
 numToStr:
-    mov ax, [letras] ; Carga el número de letras en AX
+    ; Asume que el número a convertir ya está en AX
     lea di, strBuffer + 10 ; Apunta DI al final del buffer
     mov byte ptr [di], '$' ; Terminador de cadena para DOS
     mov bx, 10 ; Base decimal
@@ -157,5 +194,5 @@ reverseLoop:
 
     test ax, ax ; Verifica si AX es 0
     jnz reverseLoop ; Si no es 0, continúa el bucle
-    ret	
+    ret
 end

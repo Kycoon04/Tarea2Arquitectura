@@ -1,5 +1,4 @@
 El análisis de datos es una parte fundamental en el análisis de negocios. Los analistas 
 de datos utilizan herramientas de análisis de datos para extraer información valiosa de 
 grandes conjuntos de datos. Los datos son la materia prima del análisis de datos y, por 
-lo tanto, la calidad de los datos es esencial para obtener resultados precisos en el 
-análisis de datos.@
+lo tanto.@
