@@ -2,7 +2,7 @@
 .stack 100h
 .data
 prompt db "Ingrese el nombre del archivo: $"
-menuOpciones1 db "1. Cargar Texto", 10, 13, "$"
+menuOpciones1 db "1. Cargar texto por defecto", 10, 13, "$"
 menuOpciones2 db "2. Ingresar nombre de archivo", 10, 13, "$"
 menuOpciones3 db "3. Salir", 10, 13, "$"
 pressEnter db "Presione ENTER para continuar...$"
@@ -28,6 +28,8 @@ posicion macro x, y
     int 10H
 endm
 
+
+
 .code
 mov ax,@DATA
 mov ds, ax
@@ -35,13 +37,13 @@ mov ds, ax
    mov ah,00h ; Establece el modo de video
    mov al,12h ; Selecciona el modo de video
    int 10h    ; Ejecuta la interrupción de video
-   mov ax,00  ; Configuración inicial del mouse
-   int 33h    ; Inicializa el mouse
+   ;mov ax,00  ; Configuración inicial del mouse
+   ;int 33h    ; Inicializa el mouse
    add dx,10
    mov ax,4  
-   int 33h    ; Ejecuta la interrupción del mouse
+   ;int 33h    ; Ejecuta la interrupción del mouse
    mov ax,01h ; Establece para mostrar el cursor del mouse
-   int 33h    ; Ejecuta la operación del mouse
+   ;int 33h    ; Ejecuta la operación del mouse
 
 menu:
 	mov ah,00h 
@@ -207,31 +209,47 @@ closeFile proc
 	
 
 count proc
+	xor bx,bx ;BX = 0: hubo espacio antes, BX=1: no hubo espacio
 	countLoop:
 		lodsb ; Cargar el siguiente carácter del buffer en AL
 		
+		test bx,bx
+		jz check_word ;si hubo espacio, verificar si hay palabra
+
 		cmp al, ' '
-		je isWord
-		cmp al, '.'
-		je isWord
+		je space_detected
+		cmp al,0Dh ;salto de línea
+		je space_detected
+		
+		jmp check_letter
+		
+		space_detected:
+		mov bx,0
+		jmp countLoop
+		
+	check_word:
+		cmp al, ' ' 
+		je check_letter 
+		cmp al,0Dh
+		je check_letter
+		
+		inc palabras  
+		mov bx,1  
+		
+		
+		
+	check_letter:
+		;TODO: dividir en mayusculas y mínusculas
+		;TODO: añadir números a la cuenta
 		cmp al, 'A'
 		jb notLetter
 		cmp al, 'z'
 		ja notLetter ; lo mismo pero para las minusculas 
 
 	isLetter:
-		mov dobleEspacio, 0
+		mov bx,1
 		inc letras
 		loop countLoop	;  si el carácter es una letra incrementa
-	isWord:
-		inc dobleEspacio
-		cmp dobleEspacio,2
-		je resetDobleEspacio
-		inc palabras
-		jmp notLetter
-		
-		resetDobleEspacio:
-		mov dobleEspacio, 0 
 	notLetter: 
 		loop countLoop
 	ret
