@@ -1,19 +1,32 @@
 .model small
-.stack 100h
+.stack 200h
 .data
-prompt db "Ingrese el nombre del archivo: $"
+
+prompt db "Ingrese el nombre del archivo:" , 10, 13, "$"
+
+error1text db "Funcion no valida", 10, 13, "$"
+error2text db "No se encontro el archivo", 10, 13, "$"
+error3text db "No se encontro la ruta", 10, 13, "$"
+error4text db "No se encontro el handler", 10, 13, "$"
+error5text db "Acceso denegado", 10, 13, "$"
+error0Ctext db "Codigo de acceso no valido", 10, 13, "$"
+
+
 menuOpciones1 db "1. Cargar texto por defecto", 10, 13, "$"
 menuOpciones2 db "2. Ingresar nombre de archivo", 10, 13, "$"
 menuOpciones3 db "3. Salir", 10, 13, "$"
+
 pressEnter db "Presione ENTER para continuar...$"
 
 CantidadLetras db "Cantidad de letras:", 10, 13, "$"
 CantidadPalabras db "Cantidad de palabras:", 10, 13, "$"
 
+MAX_FILE_NAME equ 40
 defaultFile db "texto.txt","$"
-fileName db ?
+fileName db MAX_FILE_NAME dup(?)
 fileHandle dw "$"
-buffer db 2048 dup(?)
+MAX_BUFFER_SIZE equ 1024
+buffer db MAX_BUFFER_SIZE dup(?)
 contador dw 1
 letras dw 0
 palabras dw 0
@@ -71,30 +84,34 @@ waitForSelection:
     int 16h
 
 	cmp al, '1'
-	jne notOP1
+	je option1
+	 
+
+    cmp al, '2'
+	je option2
+	
+	cmp al, '3'
+    je salir
+	
+	jmp menu
+	
+	option1:
 	lea dx, defaultFile 
 	call readFile
 	call closeFile
 	call count
 	call printResults
-	notOP1:
+	jmp menu 
 	
- 
-
-    cmp al, '2'
-	jne notOP2
+	option2:
 	call askFileName
 	lea dx, fileName
 	call readFile
 	call closeFile
 	call count
 	call printResults
-	notOP2:
+	jmp menu 
 	
-	cmp al, '3'
-    je salir
-	
-	jne menu ;Si escribe algo diferente aqui lo manda otra vez al menu
 	
 ;------------------------------------------------------Opciones del menu----------------------------------------------------
 salir:
@@ -103,6 +120,9 @@ int 21h
 
 
 askFileName proc
+	lea di, fileName
+	mov cx, MAX_FILE_NAME
+	call clearBuffer
 	;mostrar en pantalla
 	mov ah,00h 
 	mov al,12h 
@@ -125,9 +145,8 @@ askFileName proc
 		cmp al, 08h
 		je backspace
 		
-        mov [si], al ;añade caracter
-		mov al,'$'
-		mov [si+1],al
+        mov byte ptr [si], al ;añade caracter
+		mov byte ptr [si+1],'$'
         inc si 
 		jmp askFileNameScreen
 		
@@ -136,7 +155,7 @@ askFileName proc
 			je waitForInput
 
 			dec si
-			mov [si],'$'
+			mov byte ptr [si],'$'
 		
 		askFileNameScreen:
 		
@@ -169,9 +188,13 @@ readFile proc
 
     mov fileHandle, ax ; aquí guardamos el manejador del archivo
 
-    ; Iniciamos un contador para el buffer
-    mov si, offset buffer
 
+    lea di, buffer
+	mov cx, MAX_BUFFER_SIZE
+	call clearBuffer
+	; Iniciamos un contador para el buffer
+	lea si, buffer
+	mov contador, 1
 	readLoop:
     ; Lee cada uno de los carácteres del archivo
     mov ah, 3Fh 
@@ -184,31 +207,95 @@ readFile proc
     ; Verificamos si el carácter leído es '@'
     mov al, [si]
     cmp al, '@'
-    jne notEOF
-	ret
-	notEOF:
-
+    je EndOfFile
     ; Si no es '@', incrementar el contador y continuar leyendo
     inc si
 	inc contador
     jmp readLoop
-	fileError:
-		posicion 25, 20 
+	
+		EndOfFile:
+		mov [si+1],'$'
+		mov ah,00h ; Establece el modo de video
+		mov al,12h ; Selecciona el modo de video
+		int 10h 
+
+		posicion 11, 0
 		mov ah, 09h
-		lea dx, menuOpciones1
+		lea dx, buffer
+		int 21h
+		call waitForEnter
+	ret
+	
+	fileError:
+		cmp ax, 1h
+		je error1
+		cmp ax, 2h
+		je error2
+		cmp ax, 3h
+		je error3
+		cmp ax,4h
+		je error4
+		cmp ax,5h
+		je error5
+		jmp error0C
+		
+		error1:
+		push offset error1text
+		jmp printError
+		
+		error2:
+		push offset error2text
+		jmp printError
+		
+		error3:
+		push offset error3text
+		jmp printError
+		
+		error4:
+		push offset error4text
+		jmp printError
+		
+		error5:
+		push offset error5text
+		jmp printError
+		
+		error0C:
+		push offset error0Ctext
+		
+		printError:
+		posicion 0, 0 
+		pop dx
+		mov ah, 09h
 		int 21h	
+		lea dx, pressEnter
+		int 21h	
+		call waitForEnter
 		ret
+
+readFile endp
+
 closeFile proc
     mov ah, 3Eh
     mov bx, fileHandle
     int 21h
 	lea si, buffer 
-	mov cx, contador
 	mov letras, 0
     ret	
-	
+closeFile endp
+; debe tener si cargado y el maximo de caracteres en stack
+clearBuffer proc
+	add si, cx
+    clearloop:         
+	mov byte ptr [si],'$'
+	loop clearloop
+	ret
+clearBuffer endp
+
 
 count proc
+	mov palabras,0
+	mov letras, 0
+	mov cx, contador
 	xor bx,bx ;BX = 0: hubo espacio antes, BX=1: no hubo espacio
 	countLoop:
 		lodsb ; Cargar el siguiente carácter del buffer en AL
@@ -254,6 +341,7 @@ count proc
 		loop countLoop
 	ret
 count endp
+
 
 printResults proc		
 	mov ax, letras
@@ -302,7 +390,7 @@ waitForEnter proc
         
         mov ah, 00h  ;
         int 16h
-
+	
         jmp waitingForEnter  
 
     endWait:
@@ -327,4 +415,5 @@ numToStr proc
 		test ax, ax ; Verifica si AX es 0
 		jnz reverseLoop ; Si no es 0, continúa el bucle
 	ret
+numToStr endp
 end
