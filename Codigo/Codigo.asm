@@ -11,6 +11,8 @@ error4text db "No se encontro el handler", 10, 13, "$"
 error5text db "Acceso denegado", 10, 13, "$"
 error0Ctext db "Codigo de acceso no valido", 10, 13, "$"
 
+SEPARATOR equ "$"
+
 RETURN equ 0Dh
 NEW_LINE equ 0Ah
 
@@ -18,8 +20,9 @@ WORD_DELIM_SIZE equ 5
 word_delimiters db " ",".",",", RETURN, NEW_LINE
 
 MAX_WORD_SIZE equ 50
+MAX_WORDS equ 400
 wordArray db ? ; separadas por @
-wordFrequencyArray dw ? ; 1 byte para frecuencia, 1 para guardar offset de la palabra
+wordFrequencyArray dw MAX_WORDS dup(0) ; 1 byte para frecuencia, 1 para guardar offset de la palabra
 currentWord db MAX_WORD_SIZE dup(?); almacena la palabra actual
 tempWord db MAX_WORD_SIZE dup(?) ; almacena una palabra temporal
 
@@ -325,6 +328,7 @@ count proc
 	mov letras, 0
 	mov cx, contador
 	xor bx,bx ;BX = 0: hubo espacio antes, BX=1: no hubo espacio
+	lea di, currentWord
 	countLoop:
 		
 		lodsb ; Cargar el siguiente carácter del buffer en AL
@@ -339,6 +343,7 @@ count proc
 		call checkWordDelim
 		jc space_detected
 		
+		call addToCurrentWord
 		jmp check_letter
 		
 		space_detected:
@@ -385,12 +390,60 @@ count proc
 count endp
 
 addToCurrentWord proc ;di debe estar cargado con la direccion de currentWord
-	mov [si],al
-	inc si
-	mov byte ptr [si],"$"
+	mov [di],al
+	inc di
+	mov byte ptr [di],"$"
 	ret
 addToCurrentWord endp
+
+copyWord proc ;SI debe tener el inicio de la palabra, DI debe tener la variable destino 
+	addNewLetter:
+	mov al,[si]
+	mov [di],al
+	cmp al,"$"
+	je finishedCopying
+	inc si
+	inc di
+	finishedCopying:
+	mov [di],"$"
+	ret
+copyWord endp
+
+insertWord proc
+	lea di,wordFrequencyArray
+	lea si, wordArray
+	search:
+	cmp [di],0
+	je insert
+	push di
+	lea di, tempWord
+	call copyWord
+	push si
+	mov si, offset tempWord
+    mov di, offset currentWord
 	
+	call wordsAreEqual; modifica bl
+	pop di
+	pop si
+	inc si
+	cmp bl,1
+	je matchFound
+	add di,2
+	jmp search
+	
+	matchFound:
+	add [di],1
+	ret
+	insert:
+	push si
+	lea si, tempWord
+	mov [di],1
+	mov [di+1], offset tempWord
+	pop di
+	call copyWord
+	ret
+insertWord endp
+
 
 checkWordDelim proc ;letra debe estar en al
 		push cx
@@ -422,8 +475,6 @@ checkWordDelim endp
 wordsAreEqual proc
 	posicion 0, 0
     mov cx, MAX_WORD_SIZE
-    mov si, offset tempWord
-    mov di, offset currentWord
     wordLoop:
 	mov al,[si]
 	mov ah, [di]
@@ -439,11 +490,11 @@ wordsAreEqual proc
 	
 	
 	wordsNotEqual:
-	clc
+	mov bl,0
 	ret
 	
 	wordsEqual:
-	stc
+	mov bl,1
 	ret
 	
 
