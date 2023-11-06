@@ -11,6 +11,17 @@ error4text db "No se encontro el handler", 10, 13, "$"
 error5text db "Acceso denegado", 10, 13, "$"
 error0Ctext db "Codigo de acceso no valido", 10, 13, "$"
 
+RETURN equ 0Dh
+NEW_LINE equ 0Ah
+
+WORD_DELIM_SIZE equ 6
+word_delimiters db " ",".",",","@", RETURN, NEW_LINE
+
+MAX_WORD_SIZE equ 50
+wordArray db ? ; separadas por @
+wordFrequencyArray dw ? ; 1 byte para frecuencia, 1 para guardar offset de la palabra
+currentWord db MAX_WORD_SIZE dup(?); almacena la palabra actual
+tempWord db MAX_WORD_SIZE dup(?) ; almacena una palabra temporal
 
 menuOpciones1 db "1. Cargar texto por defecto", 10, 13, "$"
 menuOpciones2 db "2. Ingresar nombre de archivo", 10, 13, "$"
@@ -21,12 +32,15 @@ pressEnter db "Presione ENTER para continuar...$"
 CantidadLetras db "Cantidad de letras:", 10, 13, "$"
 CantidadPalabras db "Cantidad de palabras:", 10, 13, "$"
 
+
 MAX_FILE_NAME equ 40
 defaultFile db "texto.txt","$"
 fileName db MAX_FILE_NAME dup(?)
 fileHandle dw "$"
-MAX_BUFFER_SIZE equ 1024
+MAX_BUFFER_SIZE equ 4096
 buffer db MAX_BUFFER_SIZE dup(?)
+
+
 contador dw 1
 letras dw 0
 palabras dw 0
@@ -94,7 +108,8 @@ waitForSelection:
     je salir
 	
 	jmp menu
-	
+
+;------------------------------------------------------Opciones del menu----------------------------------------------------
 	option1:
 	lea dx, defaultFile 
 	call readFile
@@ -111,12 +126,10 @@ waitForSelection:
 	call count
 	call printResults
 	jmp menu 
-	
-	
-;------------------------------------------------------Opciones del menu----------------------------------------------------
-salir:
-mov ah, 04ch
-int 21h
+
+    salir:
+    mov ah, 04ch
+    int 21h
 
 
 askFileName proc
@@ -267,6 +280,9 @@ readFile proc
 		pop dx
 		mov ah, 09h
 		int 21h	
+		
+		
+		
 		lea dx, pressEnter
 		int 21h	
 		call waitForEnter
@@ -298,11 +314,13 @@ count proc
 	mov cx, contador
 	xor bx,bx ;BX = 0: hubo espacio antes, BX=1: no hubo espacio
 	countLoop:
+
 		lodsb ; Cargar el siguiente carácter del buffer en AL
 		
 		test bx,bx
 		jz check_word ;si hubo espacio, verificar si hay palabra
 
+		
 		cmp al, ' '
 		je space_detected
 		cmp al,0Dh ;salto de línea
@@ -312,13 +330,11 @@ count proc
 		
 		space_detected:
 		mov bx,0
-		jmp countLoop
+		loop countLoop
 		
 	check_word:
-		cmp al, ' ' 
-		je check_letter 
-		cmp al,0Dh
-		je check_letter
+		call checkWordDelim
+		jc check_letter
 		
 		inc palabras  
 		mov bx,1  
@@ -326,21 +342,90 @@ count proc
 		
 		
 	check_letter:
-		;TODO: dividir en mayusculas y mínusculas
-		;TODO: añadir números a la cuenta
+		;TODO: revisar numeros
+		cmp al, '0'
+		jb notLetter
+		cmp al, '9'
+		jbe isLetter
+		
 		cmp al, 'A'
+		jb notLetter
+		cmp al, 'Z'
+		jbe isLetter ; Saltar si el carácter está en el rango 'A' a 'Z'
+
+		cmp al, 'a'
 		jb notLetter
 		cmp al, 'z'
 		ja notLetter ; lo mismo pero para las minusculas 
 
+	
+		
 	isLetter:
 		mov bx,1
 		inc letras
 		loop countLoop	;  si el carácter es una letra incrementa
-	notLetter: 
+	notLetter:
 		loop countLoop
 	ret
 count endp
+
+checkWordDelim proc ;letra debe estar en al
+		push cx
+		push si
+		push ax
+		mov cx, WORD_DELIM_SIZE
+		
+		lea si, word_delimiters
+		worddel_loop:
+			cmp al, [si]
+			je word_delim_found 
+			inc si
+		loop worddel_loop
+		
+		word_delim_notfound:
+		pop ax
+		pop si
+		pop cx
+		clc
+		ret
+		word_delim_found:
+		pop ax
+		pop si
+		pop cx
+		stc
+		ret
+		
+checkWordDelim endp
+
+wordsAreEqual proc
+	posicion 0, 0
+    mov cx, MAX_WORD_SIZE
+    mov si, offset tempWord
+    mov di, offset currentWord
+    wordLoop:
+	mov al,[si]
+	mov ah, [di]
+    cmp ah, al
+	jne wordsNotEqual
+	cmp al,'$'
+	je wordsEqual
+	
+	inc di
+	inc si
+	
+	loop wordLoop
+	
+	
+	wordsNotEqual:
+	clc
+	ret
+	
+	wordsEqual:
+	stc
+	ret
+	
+
+wordsAreEqual endp
 
 
 printResults proc		
