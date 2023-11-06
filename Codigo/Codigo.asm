@@ -14,8 +14,8 @@ error0Ctext db "Codigo de acceso no valido", 10, 13, "$"
 RETURN equ 0Dh
 NEW_LINE equ 0Ah
 
-WORD_DELIM_SIZE equ 6
-word_delimiters db " ",".",",","@", RETURN, NEW_LINE
+WORD_DELIM_SIZE equ 5
+word_delimiters db " ",".",",", RETURN, NEW_LINE
 
 MAX_WORD_SIZE equ 50
 wordArray db ? ; separadas por @
@@ -326,21 +326,23 @@ count proc
 	mov cx, contador
 	xor bx,bx ;BX = 0: hubo espacio antes, BX=1: no hubo espacio
 	countLoop:
-
+		
 		lodsb ; Cargar el siguiente carácter del buffer en AL
+		
+		cmp al,'@'
+		je stopCounting
 		
 		test bx,bx
 		jz check_word ;si hubo espacio, verificar si hay palabra
 
 		
-		cmp al, ' '
-		je space_detected
-		cmp al,0Dh ;salto de línea
-		je space_detected
+		call checkWordDelim
+		jc space_detected
 		
 		jmp check_letter
 		
 		space_detected:
+		;revisar palabra
 		mov bx,0
 		loop countLoop
 		
@@ -378,13 +380,22 @@ count proc
 		loop countLoop	;  si el carácter es una letra incrementa
 	notLetter:
 		loop countLoop
+	stopCounting:
 	ret
 count endp
+
+addToCurrentWord proc ;di debe estar cargado con la direccion de currentWord
+	mov [si],al
+	inc si
+	mov byte ptr [si],"$"
+	ret
+addToCurrentWord endp
+	
 
 checkWordDelim proc ;letra debe estar en al
 		push cx
 		push si
-		push ax
+
 		mov cx, WORD_DELIM_SIZE
 		
 		lea si, word_delimiters
@@ -395,13 +406,12 @@ checkWordDelim proc ;letra debe estar en al
 		loop worddel_loop
 		
 		word_delim_notfound:
-		pop ax
 		pop si
 		pop cx
 		clc
 		ret
 		word_delim_found:
-		pop ax
+
 		pop si
 		pop cx
 		stc
