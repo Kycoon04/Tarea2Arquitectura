@@ -23,7 +23,7 @@ wordFrequencyArray dw ? ; 1 byte para frecuencia, 1 para guardar offset de la pa
 currentWord db MAX_WORD_SIZE dup(?); almacena la palabra actual
 tempWord db MAX_WORD_SIZE dup(?) ; almacena una palabra temporal
 
-menuOpciones1 db "1. Cargar texto por defecto", 10, 13, "$"
+menuOpciones1 db "1. Cargar ultimo texto", 10, 13, "$"
 menuOpciones2 db "2. Ingresar nombre de archivo", 10, 13, "$"
 menuOpciones3 db "3. Salir", 10, 13, "$"
 
@@ -34,7 +34,7 @@ CantidadPalabras db "Cantidad de palabras:", 10, 13, "$"
 
 
 MAX_FILE_NAME equ 40
-defaultFile db "texto.txt","$"
+;defaultFile db "texto.txt","$"
 fileName db MAX_FILE_NAME dup(?)
 fileHandle dw "$"
 MAX_BUFFER_SIZE equ 4096
@@ -110,9 +110,15 @@ waitForSelection:
 	jmp menu
 
 ;------------------------------------------------------Opciones del menu----------------------------------------------------
+    salir:
+    mov ah, 04ch
+    int 21h
+
 	option1:
-	lea dx, defaultFile 
+	;TODO: revisar ejecucion
+	lea dx, fileName 
 	call readFile
+	jc errorReading
 	call closeFile
 	call count
 	call printResults
@@ -122,14 +128,66 @@ waitForSelection:
 	call askFileName
 	lea dx, fileName
 	call readFile
+	jc errorReading
 	call closeFile
 	call count
 	call printResults
 	jmp menu 
+	
+	errorReading:
+		cmp ax, 1h
+		je error1
+		cmp ax, 2h
+		je error2
+		cmp ax, 3h
+		je error3
+		cmp ax,4h
+		je error4
+		cmp ax,5h
+		je error5
+		jmp error0C
+		
+		error1:
+		push offset error1text
+		jmp printError
+		
+		error2:
+		push offset error2text
+		jmp printError
+		
+		error3:
+		push offset error3text
+		jmp printError
+		
+		error4:
+		push offset error4text
+		jmp printError
+		
+		error5:
+		push offset error5text
+		jmp printError
+		
+		error0C:
+		push offset error0Ctext
+		
+		printError:
+		mov ah,00h ; Establece el modo de video
+		mov al,12h ; Selecciona el modo de video
+		int 10h 
 
-    salir:
-    mov ah, 04ch
-    int 21h
+		posicion 0, 0 
+		pop dx
+		mov ah, 09h
+		int 21h	
+		
+
+		lea dx, pressEnter
+		int 21h	
+		call closeFile
+		call waitForEnter
+		jmp menu
+
+
 
 
 askFileName proc
@@ -240,52 +298,6 @@ readFile proc
 	ret
 	
 	fileError:
-		cmp ax, 1h
-		je error1
-		cmp ax, 2h
-		je error2
-		cmp ax, 3h
-		je error3
-		cmp ax,4h
-		je error4
-		cmp ax,5h
-		je error5
-		jmp error0C
-		
-		error1:
-		push offset error1text
-		jmp printError
-		
-		error2:
-		push offset error2text
-		jmp printError
-		
-		error3:
-		push offset error3text
-		jmp printError
-		
-		error4:
-		push offset error4text
-		jmp printError
-		
-		error5:
-		push offset error5text
-		jmp printError
-		
-		error0C:
-		push offset error0Ctext
-		
-		printError:
-		posicion 0, 0 
-		pop dx
-		mov ah, 09h
-		int 21h	
-		
-		
-		
-		lea dx, pressEnter
-		int 21h	
-		call waitForEnter
 		ret
 
 readFile endp
